@@ -64,7 +64,6 @@ public class AzimDP extends AbstractMojo {
             artifactData.addProperty("url",a.getDownloadUrl());
             toSave.add(artifactData);
             getLog().info("Included "+artifactToString(a));
-            getLog().info("Type^ "+a.getType());
         }
         File dir = new File(project.getBuild().getDirectory(),"classes");
         if(!dir.exists()) dir.mkdirs();
