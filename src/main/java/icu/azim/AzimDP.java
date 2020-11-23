@@ -17,7 +17,7 @@ import java.io.FileWriter;
 import java.util.List;
 import java.util.Set;
 
-@Mojo(name = "generate-dependency-list", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "generate-dependency-list", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresOnline = true)
 public class AzimDP extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
@@ -28,6 +28,9 @@ public class AzimDP extends AbstractMojo {
 
     @Parameter(property = "ignoreVersions", defaultValue = "true")
     Boolean ignoreVersions;
+
+    @Parameter(property = "path", defaultValue = "AzimDP.json", required = true)
+    String path;
 
     public void execute()  {
         List<Dependency> dependencies = project.getDependencies();
@@ -61,14 +64,13 @@ public class AzimDP extends AbstractMojo {
             artifactData.addProperty("groupId",a.getGroupId());
             artifactData.addProperty("artifactId",a.getArtifactId());
             artifactData.addProperty("version",a.getVersion());
-            artifactData.addProperty("url",a.getDownloadUrl());
             toSave.add(artifactData);
             getLog().info("Included "+artifactToString(a));
         }
         File dir = new File(project.getBuild().getDirectory(),"classes");
         if(!dir.exists()) dir.mkdirs();
 
-        File result = new File(dir,"AzimDP.json");
+        File result = new File(dir, path);
         try {
             FileWriter writer = new FileWriter(result);
             gson.toJson(toSave, writer);
