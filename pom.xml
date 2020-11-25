@@ -102,7 +102,7 @@
     </build>
     <groupId>com.github.Azim</groupId>
     <artifactId>azimdp-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>AzimDP maven plugin to save a list of your dependencies</name>
     <description>A simple maven plugin to generate a list of project's dependencies in form of .json file and save it to

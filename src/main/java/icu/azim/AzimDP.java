@@ -1,6 +1,7 @@
 package icu.azim;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.maven.artifact.Artifact;
@@ -26,22 +27,18 @@ public class AzimDP extends AbstractMojo {
     @Parameter(property = "excludes")
     String[] excludes;
 
-    @Parameter(property = "ignoreVersions", defaultValue = "true")
+    @Parameter(property = "ignoreVersions", defaultValue = "true", required = true)
     Boolean ignoreVersions;
 
     @Parameter(property = "path", defaultValue = "AzimDP.json", required = true)
     String path;
 
+    @Parameter(property = "beautify", defaultValue = "false", required = true)
+    Boolean beautify;
+
     public void execute()  {
-        List<Dependency> dependencies = project.getDependencies();
-        long numDependencies = dependencies.size();
-        getLog().info("Number of dependencies: " + numDependencies);
-        for(Dependency dependency:dependencies){
-            getLog().info(dependency.getGroupId()+":"+dependency.getArtifactId()+":"+dependency.getVersion()+":"+dependency.getScope());
-        }
         Set<Artifact> artifacts = project.getArtifacts();
-        getLog().info("---- Total number of transitive dependencies: "+project.getArtifacts().size());
-        Gson gson = new Gson();
+        getLog().info("Total number of transitive dependencies: "+project.getArtifacts().size());
         JsonArray toSave = new JsonArray();
         for(Artifact a:artifacts){
             boolean skipped = false;
@@ -76,9 +73,11 @@ public class AzimDP extends AbstractMojo {
 
         try {
             FileWriter writer = new FileWriter(result);
+            Gson gson = beautify?new GsonBuilder().setPrettyPrinting().create() : new Gson();
             gson.toJson(toSave, writer);
             writer.flush();
             writer.close();
+            getLog().info("Total number of dependencies written to file: "+toSave.size());
         } catch (Exception e) {
             getLog().warn(e);
         }

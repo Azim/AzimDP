@@ -6,11 +6,13 @@ Usage example:
 <plugin>
   <groupId>com.github.Azim</groupId>
   <artifactId>azimdp-maven-plugin</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <configuration>
-    <!--defines wether or not plugin should check the versions of dependencies too, you might want to set that to true if you are using jitpack-->
+    <!--defines if plugin should check the versions of dependencies too, you might want to set that to true if you are using jitpack-->
     <ignoreVersions>true</ignoreVersions>
-    <!--path within final jar of the generated json file (including filename)-->
+    <!--defines if the resulting .json file should have indentation-->
+    <beautify>true</beautify>
+    <!--defines a path within final jar of the generated json file (including filename)-->
     <path>AzimDP.json</path>
     <!--exclude the dependencies you know are already present, for example spigot api and libby-->
     <excludes>
