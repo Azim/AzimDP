@@ -43,7 +43,29 @@
     <version>1.0.0</version>
 
     <name>AzimDP maven plugin to save a list of your dependencies</name>
+    <description>A simple maven plugin to generate a list of project's dependencies in form of .json file and save it to the target jar</description>
     <url>https://github.com/Azim/AzimDP</url>
+
+    <licenses>
+        <license>
+            <name>The Unlicense</name>
+            <url>https://unlicense.org</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Dmitrii Kazantsev</name>
+            <email>contact@azim.icu</email>
+            <organization>com.github.Azim</organization>
+            <organizationUrl>https://github.com/Azim/</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git://github.com/Azim/AzimDP.git</connection>
+        <developerConnection>scm:git:ssh://github.com/Azim/AzimDP.git</developerConnection>
+        <url>http://github.com/Azim/AzimDP/tree/master</url>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
