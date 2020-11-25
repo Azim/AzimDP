@@ -38,12 +38,12 @@
         </plugins>
 
     </build>
-    <groupId>icu.azim</groupId>
+    <groupId>com.github.Azim</groupId>
     <artifactId>azimdp-maven-plugin</artifactId>
     <version>1.0.0</version>
 
-    <name>azimdp-maven-plugin Maven Mojo</name>
-    <url>http://maven.apache.org</url>
+    <name>AzimDP maven plugin to save a list of your dependencies</name>
+    <url>https://github.com/Azim/AzimDP</url>
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
