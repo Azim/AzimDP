@@ -68,9 +68,12 @@ public class AzimDP extends AbstractMojo {
             getLog().info("Included "+artifactToString(a));
         }
         File dir = new File(project.getBuild().getDirectory(),"classes");
-        if(!dir.exists()) dir.mkdirs();
+        dir.mkdirs();
 
         File result = new File(dir, path);
+        if(result.getParentFile()!=null)
+            result.getParentFile().mkdirs();
+
         try {
             FileWriter writer = new FileWriter(result);
             gson.toJson(toSave, writer);
