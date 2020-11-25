@@ -4,7 +4,7 @@ A maven plugin to generate list of dependencies in form of json file
 Usage example:
 ```xml
 <plugin>
-  <groupId>com.github.azim</groupId>
+  <groupId>com.github.Azim</groupId>
   <artifactId>azimdp-maven-plugin</artifactId>
   <version>1.0.0</version>
   <configuration>
