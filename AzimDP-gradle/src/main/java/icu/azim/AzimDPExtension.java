@@ -8,15 +8,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AzimDPExtension {
-    final Property<Boolean> ignoreVersions;
-    final Property<Boolean> beautify;
-    final Property<String> path;
-    final ListProperty<String> exclude;
+    Property<Boolean> ignoreVersions;
+    Property<Boolean> beautify;
+    Property<String> path;
+    ListProperty<String> exclude;
+
+    public void setIgnoreVersions(boolean ignoreVersions) {
+        this.ignoreVersions.set(ignoreVersions);
+    }
+
+    public void setBeautify(boolean beautify) {
+        this.beautify.set(beautify);
+    }
+
+    public void setPath(String path) {
+        this.path.set(path);
+    }
+
+    public void setExclude(List<String> exclude) {
+        this.exclude.set(exclude);
+    }
+    public void addExclude(String exclude) {
+        this.exclude.add(exclude);
+    }
 
     @javax.inject.Inject
     public AzimDPExtension(ObjectFactory objects) {
-        ignoreVersions = objects.property(Boolean.class);
-        beautify = objects.property(Boolean.class);
+        ignoreVersions = objects.property(boolean.class);
+        beautify = objects.property(boolean.class);
         path = objects.property(String.class);
         exclude = objects.listProperty(String.class);
     }
