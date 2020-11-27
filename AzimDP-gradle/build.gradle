@@ -1,6 +1,7 @@
 plugins {
     id 'java-gradle-plugin'
     id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.12.0'
 }
 
 group 'com.github.Azim'
@@ -16,10 +17,18 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
+pluginBundle {
+    website = 'https://github.com/Azim'
+    vcsUrl = 'https://github.com/Azim/AzimDP'
+    tags = ['dependency-management']
+}
+
 gradlePlugin {
     plugins {
         AzimDP {
             id = 'com.github.Azim.azimdp'
+            displayName = 'AzimDP'
+            description = 'This plugin allows you to generate a json file with the list of dependencies used in your project'
             implementationClass = 'icu.azim.AzimDP'
         }
     }

@@ -27,6 +27,7 @@ public class AzimDP implements Plugin <Project>{
         project.task("generate-dependency-list").doLast(task->{
             //populate the list of dependencies we don't want to have
             List<ResolvedDependency> excluded = new ArrayList<>();
+            System.out.println("Top-level dependencies: ");
             task.getProject().getConfigurations().getByName("runtimeClasspath").getResolvedConfiguration().getFirstLevelModuleDependencies().forEach(resolvedDependency -> {
                 if(shouldExclude(settings.getExclude(), settings.isIgnoreVersions(), resolvedDependency)){
                     System.out.println("Excluding "+resolvedToString(resolvedDependency)+" and it's dependencies");
@@ -36,17 +37,29 @@ public class AzimDP implements Plugin <Project>{
                 }
             });
 
-            //add the ones we want to carry around into the json array
+            System.out.println("All resolved dependencies: ");
+            List<String> resolved = new ArrayList<>();
+            task.getProject()
+                    .getConfigurations().getByName("runtimeClasspath")
+                    .getIncoming().getArtifacts().getArtifacts()
+                    .forEach(artifact->{
+                        if(excluded.stream().anyMatch(ex->areSame(settings.isIgnoreVersions(), resolvedToString(ex), artifact.getId().getComponentIdentifier().toString()))){
+                            System.out.println("Excluding "+artifact.getId().getComponentIdentifier().toString());
+                        }else{
+                            System.out.println("Including "+artifact.getId().getComponentIdentifier().toString());
+                            resolved.add(artifact.getId().getComponentIdentifier().toString());
+                        }
+            });
+
             JsonArray resultingArray = new JsonArray();
-            task.getProject().getConfigurations().getByName("runtimeClasspath").getIncoming().getResolutionResult().getAllDependencies()
-                    .stream().filter(d->!excluded.stream().anyMatch(ex->areSame(settings.isIgnoreVersions(), ex, d))).forEach(d->{
+            for(String selector:resolved){
                 JsonObject element = new JsonObject();
-                String[] dependency = d.getRequested().toString().split(":");
+                String[] dependency = selector.split(":");
                 element.addProperty("groupId",dependency[0]);
                 element.addProperty("artifactId",dependency[1]);
                 element.addProperty("version",dependency[2]);
                 resultingArray.add(element);
-            });
+            }
 
             Path file = Paths.get(settings.getPath()); //relative file in target jar
             Path parent = file.getParent()!=null?file.getParent():Paths.get(""); //if it has parent directory we want to know that
@@ -85,9 +98,15 @@ public class AzimDP implements Plugin <Project>{
         return false;
     }
 
+    private  boolean areSame(boolean ignoreVersion, String one, String other){
+        String[] a = one.split(":");
+        String[] b = other.split(":");
+        return  a[0].equals(b[0])&&a[1].equals(b[1])&&(ignoreVersion||a[2].equals(b[2]));
+    }
+
+    @SuppressWarnings("unused")
     private boolean areSame(boolean ignoreVersion, ResolvedDependency resolved, DependencyResult res){
-        String[] requested = res.getRequested().toString().split(":");
-        return requested[0].equals(resolved.getModuleGroup())&&requested[1].equals(resolved.getModuleName())&&(ignoreVersion||requested[2].equals(resolved.getModuleVersion()));
+        return areSame(ignoreVersion, resolved.getModuleGroup()+":"+resolved.getModuleName()+":"+resolved.getModuleVersion(), res.getRequested().toString());
     }
 
     private String resolvedToString(ResolvedDependency d){
@@ -97,7 +116,7 @@ public class AzimDP implements Plugin <Project>{
     @SuppressWarnings("unused")
     private void printChildren(ResolvedDependency resolvedDependency, String offset){
         resolvedDependency.getChildren().forEach(child->{
-            System.out.println(offset+resolvedToString(child));
+            System.out.println(offset+resolvedToString(child)+" "+child.getConfiguration());
             printChildren(child, offset+"-");
         });
     }
