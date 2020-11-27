@@ -9,6 +9,7 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.artifacts.result.DependencyResult;
 import org.gradle.api.file.CopySpec;
+import org.gradle.api.logging.Logger;
 import org.gradle.api.tasks.Copy;
 
 import java.io.File;
@@ -27,26 +28,27 @@ public class AzimDP implements Plugin <Project>{
         project.task("generate-dependency-list").doLast(task->{
             //populate the list of dependencies we don't want to have
             List<ResolvedDependency> excluded = new ArrayList<>();
-            System.out.println("Top-level dependencies: ");
+            Logger logger = project.getLogger();
+            logger.info("Top-level dependencies: ");
             task.getProject().getConfigurations().getByName("runtimeClasspath").getResolvedConfiguration().getFirstLevelModuleDependencies().forEach(resolvedDependency -> {
                 if(shouldExclude(settings.getExclude(), settings.isIgnoreVersions(), resolvedDependency)){
-                    System.out.println("Excluding "+resolvedToString(resolvedDependency)+" and it's dependencies");
+                    logger.info("Excluding "+resolvedToString(resolvedDependency)+" and it's dependencies");
                     excluded.addAll(flatten(resolvedDependency));
                 }else{
-                    System.out.println("Including "+resolvedToString(resolvedDependency)+" and it's dependencies");
+                    logger.info("Including "+resolvedToString(resolvedDependency)+" and it's dependencies");
                 }
             });
 
-            System.out.println("All resolved dependencies: ");
+            logger.info("All resolved dependencies: ");
             List<String> resolved = new ArrayList<>();
             task.getProject()
                     .getConfigurations().getByName("runtimeClasspath")
                     .getIncoming().getArtifacts().getArtifacts()
                     .forEach(artifact->{
                         if(excluded.stream().anyMatch(ex->areSame(settings.isIgnoreVersions(), resolvedToString(ex), artifact.getId().getComponentIdentifier().toString()))){
-                            System.out.println("Excluding "+artifact.getId().getComponentIdentifier().toString());
+                            logger.info("Excluding "+artifact.getId().getComponentIdentifier().toString());
                         }else{
-                            System.out.println("Including "+artifact.getId().getComponentIdentifier().toString());
+                            logger.info("Including "+artifact.getId().getComponentIdentifier().toString());
                             resolved.add(artifact.getId().getComponentIdentifier().toString());
                         }
             });
@@ -73,7 +75,7 @@ public class AzimDP implements Plugin <Project>{
                 gson.toJson(resultingArray, writer);
                 writer.flush(); //save the file
                 writer.close();
-                System.out.println("Total number of dependencies written to file: "+resultingArray.size());
+                logger.info("Total number of dependencies written to file: "+resultingArray.size());
             } catch (Exception e) {
                 e.printStackTrace();
             }
