@@ -1,7 +1,7 @@
 # AzimDP
-A maven plugin to generate list of dependencies in form of json file
+A maven/gradle plugin to generate list of dependencies in form of json file
 
-Usage example:
+### Maven example:
 ```xml
 <plugin>
   <groupId>com.github.Azim</groupId>
@@ -29,3 +29,6 @@ Usage example:
   </executions>
 </plugin>
 ```
+
+### Gradle example:
+(coming soon)
